@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { uploadFile, submitPrompt } from "./api";
+import EvaluationReport from "./eval_report";
 
 function App() {
   const [prompt, setPrompt] = useState("");
@@ -35,6 +36,7 @@ function App() {
       <input type="file" onChange={handleFileChange} />
       <br />
       <button onClick={handleSubmit}>Submit</button>
+      <EvaluationReport />
     </div>
   );
 }

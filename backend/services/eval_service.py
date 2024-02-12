@@ -14,7 +14,13 @@ class GPTService:
         headers = {"Authorization": f"Bearer {self.api_key}"}
         data = {
             "model": "gpt-3.5-turbo",
-            "prompt": prompt,
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are helping to test a csv file. You will follow the given constraints and needs to test on the golden set given to you. The user's request has been added in the prompt",
+                },
+                {"role": "user", "content": prompt},
+            ],
             "max_tokens": max_tokens,
             "temperature": temperature,
             "top_p": top_p,

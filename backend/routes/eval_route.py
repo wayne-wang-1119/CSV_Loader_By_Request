@@ -40,10 +40,16 @@ async def evaluate():
         eval_file_path = os.path.join(os.getcwd(), "evaluations.csv")
         pd.DataFrame(evaluations).to_csv(eval_file_path, index=False)
 
-        return send_from_directory(
-            directory=os.path.dirname(eval_file_path),
-            filename=os.path.basename(eval_file_path),
-            as_attachment=True,
-        )
+        return eval_file_path
+    except Exception as e:
+        return jsonify(error=str(e)), 500
+
+
+@eval_blueprint.route("/evaluation_results", methods=["GET"])
+async def get_evaluation_results():
+    eval_file_path = os.path.join(os.getcwd(), "evaluations.csv")
+    try:
+        df = pd.read_csv(eval_file_path)
+        return jsonify(df.to_dict(orient="records"))
     except Exception as e:
         return jsonify(error=str(e)), 500
