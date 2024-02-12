@@ -3,28 +3,28 @@ export const uploadFile = async (file) => {
   formData.append("file", file);
 
   try {
-    const response = await fetch("/data/upload", {
+    const response = await fetch("http://localhost:5000/data/upload", {
       method: "POST",
       body: formData,
     });
 
     if (!response.ok) throw new Error("File upload failed");
     const data = await response.json();
-    return data.filePath;
+    return data.file;
   } catch (error) {
     console.error("Upload error:", error);
     return "";
   }
 };
 
-export const submitPrompt = async (prompt, filePath) => {
+export const submitPrompt = async (prompt, file) => {
   try {
-    const response = await fetch("/eval/evaluate", {
+    const response = await fetch("http://localhost:5000/eval/evaluate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ prompt, filePath }),
+      body: JSON.stringify({ prompt, file }),
     });
 
     if (!response.ok) throw new Error("Evaluation failed");

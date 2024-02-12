@@ -4,7 +4,7 @@ import requests
 class GPTService:
     def __init__(self, api_key):
         self.api_key = api_key
-        self.api_url = "https://api.openai.com/v1/completions"
+        self.api_url = "https://api.openai.com/v1/chat/completions"
 
     def query(self, prompt, max_tokens=100, temperature=0.5, top_p=1.0, n=1):
         headers = {"Authorization": f"Bearer {self.api_key}"}
