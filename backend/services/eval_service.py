@@ -2,6 +2,10 @@ import requests
 
 
 class GPTService:
+    """
+    we use here to query the GPT Service as a module
+    """
+
     def __init__(self, api_key):
         self.api_key = api_key
         self.api_url = "https://api.openai.com/v1/chat/completions"

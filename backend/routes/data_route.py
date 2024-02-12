@@ -10,6 +10,9 @@ data_blueprint = Blueprint("data", __name__)
 
 @data_blueprint.route("/upload", methods=["POST"])
 async def upload_file():
+    """
+    We use this function to handle file uploads, right now we accept csv files. We store them temp on server because it is easy to implement it this way for now
+    """
     if "file" not in request.files:
         return jsonify(error="No file part"), 400
     file = request.files["file"]

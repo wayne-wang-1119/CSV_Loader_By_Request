@@ -7,14 +7,19 @@ import pandas as pd
 from services.data_service import load_and_process_csv
 
 load_dotenv()
-api_key = os.getenv("OPENAI_API_KEY")
+api_key = os.getenv("OPENAI_API_KEY")  ## get open ai api key, set it up in .env
 
 eval_blueprint = Blueprint("eval", __name__)
-gpt_service = GPTService(api_key=api_key)
+gpt_service = GPTService(
+    api_key=api_key
+)  ## custome defiend class for calling gpt, should include a callback
 
 
 @eval_blueprint.route("/evaluate", methods=["POST"])
 async def evaluate():
+    """
+    We use this to chunk and send each chunk to GPT to ask for a test result, this is my knowledge of how testing works
+    """
     prompt = request.json.get("prompt")
     file_path = request.json.get("file")
 
