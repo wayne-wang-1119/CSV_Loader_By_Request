@@ -26,7 +26,7 @@ function EvaluationReport() {
           {results.map((result, index) => (
             <tr key={index}>
               <td>{index + 1}</td>
-              <td>{result.response}</td>{" "}
+              <td>{result.Result}</td>
             </tr>
           ))}
         </tbody>

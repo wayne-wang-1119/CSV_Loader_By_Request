@@ -27,9 +27,9 @@ export const submitPrompt = async (prompt, file) => {
       body: JSON.stringify({ prompt, file }),
     });
 
-    if (!response.ok) throw new Error("Evaluation failed");
     const data = await response.json();
     console.log(data);
+    return data;
   } catch (error) {
     console.error("Submission error:", error);
   }

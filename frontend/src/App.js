@@ -5,6 +5,7 @@ import EvaluationReport from "./eval_report";
 function App() {
   const [prompt, setPrompt] = useState("");
   const [filePath, setFilePath] = useState("");
+  const [evaluationCompleted, setEvaluationCompleted] = useState(false);
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -17,7 +18,12 @@ function App() {
   const handleSubmit = async () => {
     if (prompt && filePath) {
       console.log("Submit prompt and file path:", prompt, filePath);
-      submitPrompt(prompt, filePath);
+      const success = await submitPrompt(prompt, filePath);
+      if (success) {
+        setEvaluationCompleted(true);
+      } else {
+        alert("Evaluation submission failed.");
+      }
     } else {
       alert("Please upload a file and enter a prompt.");
     }
@@ -36,7 +42,7 @@ function App() {
       <input type="file" onChange={handleFileChange} />
       <br />
       <button onClick={handleSubmit}>Submit</button>
-      <EvaluationReport />
+      {evaluationCompleted && <EvaluationReport />}
     </div>
   );
 }

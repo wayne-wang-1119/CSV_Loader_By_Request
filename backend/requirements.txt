@@ -6,3 +6,4 @@ flask
 flask_sqlalchemy
 flask_cors
 flask[async]
+openai
