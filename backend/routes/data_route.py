@@ -3,12 +3,13 @@ from flask import Blueprint, request, jsonify
 from werkzeug.utils import secure_filename
 from services.data_service import load_and_process_csv
 import os
+import tempfile
 
 data_blueprint = Blueprint("data", __name__)
 
 
 @data_blueprint.route("/upload", methods=["POST"])
-def upload_file():
+async def upload_file():
     if "file" not in request.files:
         return jsonify(error="No file part"), 400
     file = request.files["file"]
@@ -16,10 +17,11 @@ def upload_file():
         return jsonify(error="No selected file"), 400
     if file and file.filename.endswith(".csv"):
         filename = secure_filename(file.filename)
-        file_path = os.path.join("/tmp", filename)
+        wd = os.getcwd()
+        file_path = os.path.join(wd, filename)
+        print(file_path)
         file.save(file_path)
         serialized_records = load_and_process_csv(file_path, chunk_size=500)
-        os.remove(file_path)
         return jsonify({"processed_records": serialized_records}), 200
     else:
         return jsonify(error="Unsupported file type"), 400

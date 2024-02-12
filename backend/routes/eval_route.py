@@ -1,8 +1,9 @@
 # Assuming this is part of eval_route.py
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_from_directory
 from services.eval_service import GPTService
 import os
 from dotenv import load_dotenv
+import pandas as pd
 
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
@@ -12,24 +13,32 @@ gpt_service = GPTService(api_key=api_key)
 
 
 @eval_blueprint.route("/evaluate", methods=["POST"])
-def evaluate():
-    data = request.json
-    prompt = data.get("prompt")
-    records = data.get("records")
+async def evaluate():
+    prompt = request.json.get("prompt")
+    file_path = request.json.get("file")
 
-    if not prompt or not records:
-        return jsonify(error="Missing prompt or records"), 400
+    if not prompt or not file_path:
+        return jsonify(error="Missing prompt or file path"), 400
 
-    evaluations = []
-    for record in records:
-        response = gpt_service.query(
-            "For the data below, answer if they meet the requirements mentioned in prompt\n"
-            + f"{prompt}\n{record}",
-            max_tokens=100,
+    try:
+        df = pd.read_csv(file_path)
+        evaluations = []
+        for index, row in df.iterrows():
+            record = row.to_json()
+            response = gpt_service.query(f"{prompt}\n{record}", max_tokens=100)
+            if response:
+                evaluations.append(response)
+            else:
+                evaluations.append("Error or no response from GPT-3.5")
+
+        # Save evaluations to a new CSV
+        eval_file_path = os.path.join(os.getcwd(), "evaluations.csv")
+        pd.DataFrame(evaluations).to_csv(eval_file_path, index=False)
+
+        return send_from_directory(
+            directory=os.path.dirname(eval_file_path),
+            filename=os.path.basename(eval_file_path),
+            as_attachment=True,
         )
-        if response:
-            evaluations.append(response)
-        else:
-            evaluations.append("Error or no response from GPT-3.5")
-
-    return jsonify({"evaluations": evaluations}), 200
+    except Exception as e:
+        return jsonify(error=str(e)), 500
