@@ -22,7 +22,6 @@ async def evaluate():
         return jsonify(error="Missing prompt or file path"), 400
 
     try:
-        df = pd.read_csv(file_path)
         serialized_records = load_and_process_csv(file_path, chunk_size=500)
         evaluations = []
         for record in serialized_records:
