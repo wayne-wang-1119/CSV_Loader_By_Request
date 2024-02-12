@@ -21,7 +21,6 @@ async def upload_file():
         file_path = os.path.join(wd, filename)
         print(file_path)
         file.save(file_path)
-        serialized_records = load_and_process_csv(file_path, chunk_size=500)
-        return jsonify({"processed_records": serialized_records}), 200
+        return jsonify({"file": file_path}), 200
     else:
         return jsonify(error="Unsupported file type"), 400

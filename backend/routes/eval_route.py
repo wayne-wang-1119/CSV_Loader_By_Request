@@ -4,6 +4,7 @@ from services.eval_service import GPTService
 import os
 from dotenv import load_dotenv
 import pandas as pd
+from services.data_service import load_and_process_csv
 
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
@@ -22,9 +23,9 @@ async def evaluate():
 
     try:
         df = pd.read_csv(file_path)
+        serialized_records = load_and_process_csv(file_path, chunk_size=500)
         evaluations = []
-        for index, row in df.iterrows():
-            record = row.to_json()
+        for record in serialized_records:
             response = gpt_service.query(f"{prompt}\n{record}", max_tokens=100)
             if response:
                 evaluations.append(response)
