@@ -47,7 +47,8 @@ async def evaluate():
             evaluations.append("True")
         # Save evaluations to a new CSV
         eval_file_path = os.path.join(os.getcwd(), "evaluations.csv")
-        pd.DataFrame(evaluations).to_csv(eval_file_path, index=False, mode="w")
+        evaluations_df = pd.DataFrame(evaluations, columns=["Result"])
+        evaluations_df.to_csv(eval_file_path, index=False, mode="w")
         reporter.eval_file_path = eval_file_path
         df = reporter.generate_report()
         print(df)

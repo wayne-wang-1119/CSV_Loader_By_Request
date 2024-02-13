@@ -14,9 +14,8 @@ class ReportGenerator:
         return self.eval_file_path
 
     def generate_report(self):
-        result_df = pd.read_csv(self.eval_file_path, header=None)
-        original_df = pd.read_csv(self.original_file_path, header=None)
-        result_df.to_dict()
+        result_df = pd.read_csv(self.eval_file_path, header=0)
+        original_df = pd.read_csv(self.original_file_path, header=0)
         original_df["Result"] = result_df["Result"]
         report_df = original_df
         return report_df
