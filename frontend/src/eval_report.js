@@ -11,7 +11,37 @@ function EvaluationReport() {
         console.error("Error fetching evaluation results:", error)
       );
   }, []);
-  console.log(results);
+
+  // Dynamically generate table headers based on the keys of the first result object
+  const generateHeaders = () => {
+    if (results.length > 0) {
+      return Object.keys(results[0]).map((key) => <th key={key}>{key}</th>);
+    }
+    return null;
+  };
+
+  // Dynamically generate table rows and columns based on results
+  const generateRows = () => {
+    return results.map((result, index) => (
+      <tr key={index}>
+        {Object.values(result).map((value, valueIndex) => (
+          <td key={valueIndex}>{value.toString()}</td>
+        ))}
+        <td>
+          <button onClick={() => handleFeedback(index, "thumbs up")}>👍</button>
+          <button onClick={() => handleFeedback(index, "thumbs down")}>
+            👎
+          </button>
+        </td>
+      </tr>
+    ));
+  };
+
+  // Example function to handle thumbs up/down actions
+  const handleFeedback = (index, feedback) => {
+    console.log(`Feedback for index ${index}: ${feedback}`);
+    // Implement feedback logic here, possibly sending feedback to your backend
+  };
 
   return (
     <div>
@@ -19,18 +49,11 @@ function EvaluationReport() {
       <table>
         <thead>
           <tr>
-            <th>Index</th>
-            <th>Result</th>
+            {generateHeaders()}
+            <th>Feedback</th>
           </tr>
         </thead>
-        <tbody>
-          {results.map((result, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{result.Result}</td>
-            </tr>
-          ))}
-        </tbody>
+        <tbody>{generateRows()}</tbody>
       </table>
     </div>
   );
