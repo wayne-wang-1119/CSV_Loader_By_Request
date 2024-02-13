@@ -16,7 +16,11 @@ gpt_service = GPTService(
     api_key=api_key
 )  ## custome defiend class for calling gpt, should include a callback
 
-reporter = ReportGenerator()
+reporter = ReportGenerator(
+    eval_file_path=os.path.join(os.getcwd(), "evaluations.csv"),
+    original_file_path=os.path.join(os.getcwd(), "file.csv"),
+)
+
 
 @eval_blueprint.route("/evaluate", methods=["POST"])
 async def evaluate():
@@ -25,7 +29,6 @@ async def evaluate():
     """
     prompt = request.json.get("prompt")
     file_path = request.json.get("file")
-
 
     if not prompt or not file_path:
         return jsonify(error="Missing prompt or file path"), 400
@@ -36,16 +39,18 @@ async def evaluate():
 
         reporter.original_file_path = file_path
         for record in serialized_records:
-            response = gpt_service.query(f"{prompt}\n{record}")
-            if response:
-                evaluations.append(response)
-            else:
-                evaluations.append("Error or no response from GPT-3.5")
-        evaluations.pop(0)
+            # response = gpt_service.query(f"{prompt}\n{record}")
+            # if response:
+            #     evaluations.append(response)
+            # else:
+            #     evaluations.append("Error or no response from GPT-3.5")
+            evaluations.append("True")
         # Save evaluations to a new CSV
         eval_file_path = os.path.join(os.getcwd(), "evaluations.csv")
         pd.DataFrame(evaluations).to_csv(eval_file_path, index=False, mode="w")
         reporter.eval_file_path = eval_file_path
+        df = reporter.generate_report()
+        print(df)
         return jsonify({"file": eval_file_path})
     except Exception as e:
         error_details = traceback.format_exc()

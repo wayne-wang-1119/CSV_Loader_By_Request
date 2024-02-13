@@ -11,6 +11,7 @@ function EvaluationReport() {
         console.error("Error fetching evaluation results:", error)
       );
   }, []);
+  console.log(results);
 
   return (
     <div>

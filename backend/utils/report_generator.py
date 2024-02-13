@@ -6,8 +6,7 @@ class ReportGenerator:
     report class for generating data report after appending results to the dataframe
     """
 
-    def __init__(self, format, eval_file_path, original_file_path) -> None:
-        self.format = format
+    def __init__(self, eval_file_path, original_file_path) -> None:
         self.eval_file_path = eval_file_path
         self.original_file_path = original_file_path
 
@@ -15,7 +14,9 @@ class ReportGenerator:
         return self.eval_file_path
 
     def generate_report(self):
-        result_df = pd.read_csv(self.eval_file_path, header=None, names=["Result"])
+        result_df = pd.read_csv(self.eval_file_path, header=None)
         original_df = pd.read_csv(self.original_file_path, header=None)
-        report_df = pd.merge(left=original_df, right=result_df)
+        result_df.to_dict()
+        original_df["Result"] = result_df["Result"]
+        report_df = original_df
         return report_df
