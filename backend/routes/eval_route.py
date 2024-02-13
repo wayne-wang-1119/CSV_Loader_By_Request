@@ -39,12 +39,12 @@ async def evaluate():
 
         reporter.original_file_path = file_path
         for record in serialized_records:
-            # response = gpt_service.query(f"{prompt}\n{record}")
-            # if response:
-            #     evaluations.append(response)
-            # else:
-            #     evaluations.append("Error or no response from GPT-3.5")
-            evaluations.append("True")
+            response = gpt_service.query(f"{prompt}\n{record}")
+            if response:
+                evaluations.append(response)
+            else:
+                evaluations.append("Error or no response from GPT-3.5")
+            # evaluations.append("True")
         # Save evaluations to a new CSV
         eval_file_path = os.path.join(os.getcwd(), "evaluations.csv")
         evaluations_df = pd.DataFrame(evaluations, columns=["Result"])
